@@ -1,0 +1,91 @@
+name: Test Action
+
+on:
+    pull_request:
+        branches: [main]
+        paths-ignore:
+            - "README.md"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v5
+              with:
+                  node-version: 20.x
+            - run: npm ci
+            - run: npm run build
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: dist
+                  path: dist
+                  if-no-files-found: error
+
+    test-universal-auth:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: actions/download-artifact@v4
+              with:
+                  name: dist
+                  path: dist
+            - name: Authenticate with universal-auth
+              id: auth
+              uses: ./
+              with:
+                  method: universal-auth
+                  client-id: ${{ secrets.INFISICAL_UNIVERSAL_AUTH_CLIENT_ID }}
+                  client-secret: ${{ secrets.INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET }}
+                  domain: http://localhost:8080
+                  output-credential: "true"
+                  output-env-credential: "true"
+            - name: Verify outputs
+              run: |
+                  if [ -z "${{ steps.auth.outputs.access-token }}" ]; then
+                      echo "ERROR: access-token step output is empty"
+                      exit 1
+                  fi
+                  echo "access-token step output is set"
+
+                  if [ -z "$INFISICAL_TOKEN" ]; then
+                      echo "ERROR: INFISICAL_TOKEN env var is empty"
+                      exit 1
+                  fi
+                  echo "INFISICAL_TOKEN env var is set"
+
+    test-oidc:
+        needs: build
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+        steps:
+            - uses: actions/checkout@v5
+            - uses: actions/download-artifact@v4
+              with:
+                  name: dist
+                  path: dist
+            - name: Authenticate with oidc
+              id: auth
+              uses: ./
+              with:
+                  method: oidc
+                  identity-id: ${{ secrets.INFISICAL_MACHINE_IDENTITY_ID }}
+                  domain: http://localhost:8080
+                  output-credential: "true"
+                  output-env-credential: "true"
+            - name: Verify outputs
+              run: |
+                  if [ -z "${{ steps.auth.outputs.access-token }}" ]; then
+                      echo "ERROR: access-token step output is empty"
+                      exit 1
+                  fi
+                  echo "access-token step output is set"
+
+                  if [ -z "$INFISICAL_TOKEN" ]; then
+                      echo "ERROR: INFISICAL_TOKEN env var is empty"
+                      exit 1
+                  fi
+                  echo "INFISICAL_TOKEN env var is set"
