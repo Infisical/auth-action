@@ -5,6 +5,11 @@ on:
         branches: [main]
         paths-ignore:
             - "README.md"
+    workflow_dispatch:
+        inputs:
+            domain:
+                description: "Infisical domain URL (e.g. your Pinggy tunnel URL)"
+                required: true
 
 jobs:
     build:
@@ -38,7 +43,7 @@ jobs:
                   method: universal-auth
                   client-id: ${{ secrets.INFISICAL_UNIVERSAL_AUTH_CLIENT_ID }}
                   client-secret: ${{ secrets.INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET }}
-                  domain: http://localhost:8080
+                  domain: ${{ inputs.domain }}
                   output-credential: "true"
                   output-env-credential: "true"
             - name: Verify outputs
@@ -73,7 +78,7 @@ jobs:
               with:
                   method: oidc
                   identity-id: ${{ secrets.INFISICAL_MACHINE_IDENTITY_ID }}
-                  domain: http://localhost:8080
+                  domain: ${{ inputs.domain }}
                   output-credential: "true"
                   output-env-credential: "true"
             - name: Verify outputs
