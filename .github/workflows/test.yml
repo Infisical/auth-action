@@ -1,0 +1,24 @@
+name: Test Infisical Action
+on: [push, workflow_dispatch]
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Test local action
+              uses: ./
+              with:
+                  method: "universal"
+                  client-id: "950a022c-2915-4324-b938-6b4a58a998f3"
+                  client-secret: "d717dcf0bfddcd7872eeee6447b22439a5512422aaff4a69db790c8b6ee7e634"
+                  domain: "https://nonmomentary-milkily-jamari.ngrok-free.dev"
+                  
+            - name: Print infisical token
+              run: |
+                  echo "Test: ${{ env.INFISICAL_TOKEN }}"
