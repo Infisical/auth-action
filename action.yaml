@@ -32,7 +32,7 @@ inputs:
   file-output-path:
     description: "The path to save the file when export-type is set to `file`"
     required: false
-    default: "/.env"
+    default: "/.infisical-token"
   extra-headers:
     description: "Extra headers to add to all requests sent to Infisical"
     required: false
