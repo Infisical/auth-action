@@ -52776,7 +52776,7 @@ var AuthMethod;
 var ExportType;
 (function (ExportType) {
     ExportType["Env"] = "env";
-    ExportType["File"] = "file";
+    ExportType["Output"] = "output";
 })(ExportType || (ExportType = {}));
 const ENVIRONMENT_VARIABLE_NAMES = {
     INFISICAL_UNIVERSAL_AUTH_CLIENT_ID_NAME: "INFISICAL_UNIVERSAL_AUTH_CLIENT_ID",
@@ -52796,15 +52796,12 @@ const handleRequestError = (err) => {
         core.error(err === null || err === void 0 ? void 0 : err.message);
     }
 };
-const validateExportType = (exportType, fileOutputPath) => {
+const validateExportType = (exportType) => {
     if (!exportType) {
         throw new Error("Export type is required");
     }
     if (!Object.values(ExportType).includes(exportType)) {
         throw new Error(`Invalid export type: ${exportType}`);
-    }
-    if (exportType === ExportType.File && !fileOutputPath) {
-        throw new Error("file-output-path is required when export type is file");
     }
 };
 const validateAuthMethod = (authMethod) => {
@@ -52812,23 +52809,15 @@ const validateAuthMethod = (authMethod) => {
         throw new Error(`Invalid auth method: ${authMethod}`);
     }
 };
-const exportAccessToken = (infisicalToken, exportType, fileOutputPath) => __awaiter(void 0, void 0, void 0, function* () {
+const exportAccessToken = (infisicalToken, exportType) => __awaiter(void 0, void 0, void 0, function* () {
+    core.setSecret(infisicalToken);
     if (exportType === ExportType.Env) {
-        core.setSecret(infisicalToken);
         core.exportVariable("INFISICAL_TOKEN", infisicalToken);
         core.info("Injected Infisical token as environment variable [INFISICAL_TOKEN]");
     }
-    else if (exportType === ExportType.File) {
-        try {
-            const filePath = `${process.env.GITHUB_WORKSPACE}${fileOutputPath}`;
-            core.info(`Exporting Infisical token to ${filePath}`);
-            yield fs.writeFile(filePath, infisicalToken);
-        }
-        catch (err) {
-            core.error(`Error writing file: ${err === null || err === void 0 ? void 0 : err.message}`);
-            throw err;
-        }
-        core.info("Successfully exported Infisical token to file");
+    if (exportType === ExportType.Output) {
+        core.setOutput("access-token", infisicalToken);
+        core.info("Set Infisical token as action output [access-token]");
     }
 });
 
@@ -53026,9 +53015,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         const method = core.getInput("method");
         const domain = core.getInput("domain");
         const exportType = core.getInput("export-type");
-        const fileOutputPath = core.getInput("file-output-path");
         const extraHeaders = parseHeadersInput("extra-headers");
-        validateExportType(exportType, fileOutputPath);
+        validateExportType(exportType);
         validateAuthMethod(method);
         let performAuth;
         switch (method) {
@@ -53077,7 +53065,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             defaultHeaders: extraHeaders,
         });
         const infisicalToken = yield auth.login(performAuth);
-        yield exportAccessToken(infisicalToken, exportType, fileOutputPath);
+        yield exportAccessToken(infisicalToken, exportType);
     }
     catch (err) {
         core.setFailed(err === null || err === void 0 ? void 0 : err.message);
