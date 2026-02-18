@@ -49,7 +49,7 @@ jobs:
               id: auth
               uses: ./
               with:
-                  method: universal-auth
+                  method: universal
                   client-id: ${{ inputs.client-id || secrets.INFISICAL_UNIVERSAL_AUTH_CLIENT_ID }}
                   client-secret: ${{ inputs.client-secret || secrets.INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET }}
                   domain: ${{ inputs.domain }}
