@@ -18,9 +18,9 @@ function parseHeadersInput(inputKey: string) {
 
   const parsedHeaderStrings = headerStrings.reduce(
     (obj, line) => {
-      const seperator = line.indexOf(":");
-      const key = line.substring(0, seperator).trim().toLowerCase();
-      const value = line.substring(seperator + 1).trim();
+      const separator = line.indexOf(":");
+      const key = line.substring(0, separator).trim().toLowerCase();
+      const value = line.substring(separator + 1).trim();
       if (obj[key]) {
         obj[key] = [obj[key], value].join(", ");
       } else {
@@ -137,7 +137,11 @@ const main = async () => {
 
     const infisicalToken = await auth.login(performAuth);
 
-    await exportAccessToken(infisicalToken, outputCredential, outputEnvCredential);
+    await exportAccessToken(
+      infisicalToken,
+      outputCredential,
+      outputEnvCredential,
+    );
   } catch (err) {
     core.setFailed((err as Error)?.message);
   }
