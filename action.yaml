@@ -1,6 +1,6 @@
-name: Perform Infisical Authentication
+name: Infisical Auth Action
 author: "Infisical"
-description: "Perform Infisical authentication and export the obtained access token as an environment variable or a file"
+description: "This action allows you to easily authenticate with Infisical and obtain an access token and export it."
 branding:
   icon: "lock"
   color: "yellow"
