@@ -19,7 +19,7 @@ This GitHub Action performs authentication with Infisical—whether hosted in th
 - uses: Infisical/auth-action@v1
   with:
     method: "aws-iam"
-    identity-id: "24be0d94-b43a-41c4-812c-1e8654d9ce1e"
+    identity-id: "<machine-identity-id>"
     domain: "https://app.infisical.com" # Update to the instance URL when using EU (https://eu.infisical.com), a dedicated instance, or a self-hosted instance
 ```
 
@@ -36,11 +36,28 @@ permissions:
   contents: read
 ```
 
+```yaml
+- uses: Infisical/auth-action@v1
+  with:
+    method: "oidc"
+    identity-id: "<machine-identity-id>"
+    domain: "https://app.infisical.com" # Update to the instance URL when using EU (https://eu.infisical.com), a dedicated instance, or a self-hosted instance
+```
+
 ### Universal Auth
 
 - Configure a machine identity to have an auth method of "Universal Auth".
 - Get the machine identity's `client_id` and `client_secret` and store them as Github secrets (recommended) or environment variables.
 - Set the `client-id` and `client-secret` input parameters.
+
+```yaml
+- uses: Infisical/auth-action@v1
+  with:
+    method: "universal"
+    client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+    client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+    domain: "https://app.infisical.com" # Update to the instance URL when using EU (https://eu.infisical.com), a dedicated instance, or a self-hosted instance
+```
 
 ## Usage
 
@@ -91,9 +108,9 @@ See [action.yml](./action.yaml) for more detail.
 |          Option          |                                            Description                                            | Required | Default |
 |--------------------------|---------------------------------------------------------------------------------------------------|----------|---------|
 | method                   | The authentication method to use (`universal`, `oidc`, `aws-iam`).                                |   Yes    |         |
-| client-id                | Machine Identity client ID. Required if method is `universal`.                                    |    No    |         |
-| client-secret            | Machine Identity secret key. Required if method is `universal`.                                   |    No    |         |
-| identity-id              | Machine Identity ID. Required if method is `oidc` or `aws-iam`.                                  |    No    |         |
+| client-id                | Machine Identity client ID. Required if method is `universal`. Can also be set via the `INFISICAL_UNIVERSAL_AUTH_CLIENT_ID` environment variable. |    No    |         |
+| client-secret            | Machine Identity secret key. Required if method is `universal`. Can also be set via the `INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET` environment variable. |    No    |         |
+| identity-id              | Machine Identity ID. Required if method is `oidc` or `aws-iam`. Can also be set via the `INFISICAL_MACHINE_IDENTITY_ID` environment variable. |    No    |         |
 | oidc-audience            | Custom aud claim for the signed Github ID token. Configurable if method is `oidc`.                |    No    |         |
 | domain                   | Infisical URL. If you're using Infisical EU (`https://eu.infisical.com`) or a self-hosted/dedicated instance, you will need to set the appropriate value for this field. | No | `https://app.infisical.com` |
 | output-credential        | When set to `true`, outputs the fetched access token as an action step output (`access-token`).   |    No    | `true`  |
