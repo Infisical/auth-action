@@ -8,11 +8,6 @@ export enum AuthMethod {
   AwsIam = "aws-iam",
 }
 
-export enum ExportType {
-  Env = "env",
-  File = "file",
-}
-
 export const ENVIRONMENT_VARIABLE_NAMES = {
   INFISICAL_UNIVERSAL_AUTH_CLIENT_ID_NAME: "INFISICAL_UNIVERSAL_AUTH_CLIENT_ID",
   INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET_NAME:
