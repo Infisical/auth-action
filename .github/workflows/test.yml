@@ -1,0 +1,108 @@
+name: Test Infisical Action
+on: [push, workflow_dispatch]
+
+jobs:
+    test-output-credential:
+        name: Test output credential (default)
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Authenticate with Infisical
+              id: auth
+              uses: ./
+              with:
+                  method: "universal"
+                  client-id: "950a022c-2915-4324-b938-6b4a58a998f3"
+                  client-secret: "d717dcf0bfddcd7872eeee6447b22439a5512422aaff4a69db790c8b6ee7e634"
+                  domain: "https://nonmomentary-milkily-jamari.ngrok-free.dev"
+
+            - name: Verify output is set
+              run: |
+                  if [ -z "${{ steps.auth.outputs.access-token }}" ]; then
+                    echo "::error::access-token output is empty"
+                    exit 1
+                  fi
+                  echo "Output credential is set"
+
+            - name: Verify env is not set
+              run: |
+                  if [ -n "$INFISICAL_TOKEN" ]; then
+                    echo "::error::INFISICAL_TOKEN should not be set"
+                    exit 1
+                  fi
+                  echo "Environment variable is correctly not set"
+
+    test-env-credential:
+        name: Test env credential
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Authenticate with Infisical
+              id: auth
+              uses: ./
+              with:
+                  method: "universal"
+                  client-id: "950a022c-2915-4324-b938-6b4a58a998f3"
+                  client-secret: "d717dcf0bfddcd7872eeee6447b22439a5512422aaff4a69db790c8b6ee7e634"
+                  domain: "https://nonmomentary-milkily-jamari.ngrok-free.dev"
+                  output-credential: false
+                  output-env-credential: true
+
+            - name: Verify env is set
+              run: |
+                  if [ -z "$INFISICAL_TOKEN" ]; then
+                    echo "::error::INFISICAL_TOKEN is empty"
+                    exit 1
+                  fi
+                  echo "Environment variable is set"
+
+            - name: Verify output is not set
+              run: |
+                  if [ -n "${{ steps.auth.outputs.access-token }}" ]; then
+                    echo "::error::access-token output should not be set"
+                    exit 1
+                  fi
+                  echo "Output credential is correctly not set"
+
+    test-both-credentials:
+        name: Test both credentials
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Authenticate with Infisical
+              id: auth
+              uses: ./
+              with:
+                  method: "universal"
+                  client-id: "950a022c-2915-4324-b938-6b4a58a998f3"
+                  client-secret: "d717dcf0bfddcd7872eeee6447b22439a5512422aaff4a69db790c8b6ee7e634"
+                  domain: "https://nonmomentary-milkily-jamari.ngrok-free.dev"
+                  output-credential: true
+                  output-env-credential: true
+
+            - name: Verify both are set
+              run: |
+                  if [ -z "${{ steps.auth.outputs.access-token }}" ]; then
+                    echo "::error::access-token output is empty"
+                    exit 1
+                  fi
+                  if [ -z "$INFISICAL_TOKEN" ]; then
+                    echo "::error::INFISICAL_TOKEN is empty"
+                    exit 1
+                  fi
+                  echo "Both output and env credential are set"
