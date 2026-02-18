@@ -1,0 +1,42 @@
+name: Perform Infisical Authentication
+author: "Infisical"
+description: "Perform Infisical authentication and export the obtained access token as an environment variable or a file"
+branding:
+  icon: "lock"
+  color: "yellow"
+inputs:
+  method:
+    description: "The authentication method to use (`universal`, `oidc`, `aws-iam`)"
+    required: true
+
+  client-id:
+    description: "Machine Identity client ID (required if method is `universal`)"
+    required: false
+  client-secret:
+    description: "Machine Identity secret key (required if method is `universal`)"
+    required: false
+  identity-id:
+    description: "Machine Identity ID (required if method is `oidc` or `aws-iam`)"
+    required: false
+  oidc-audience:
+    description: "Custom aud claim for the signed Github ID token (configurable if method is `oidc`)"
+    required: false
+  domain:
+    description: "Infisical URL (defaults to `https://app.infisical.com`)"
+    required: false
+    default: "https://app.infisical.com"
+  export-type:
+    description: "If set to `env`, it will set the obtained access token as an environment variable (INFISICAL_TOKEN). If set to `file`, it will export the access token to the specified file as defined in `file-output-path`"
+    required: true
+    default: "env"
+  file-output-path:
+    description: "The path to save the file when export-type is set to `file`"
+    required: false
+    default: "/.env"
+  extra-headers:
+    description: "Extra headers to add to all requests sent to Infisical"
+    required: false
+    default: ""
+runs:
+  using: "node20"
+  main: "dist/index.cjs"

@@ -1,0 +1,3 @@
+# Infisical Auth Action
+
+## TODO
