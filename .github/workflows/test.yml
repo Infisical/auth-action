@@ -18,7 +18,7 @@ on:
                 required: true
             identity-id:
                 description: "Machine Identity ID (for OIDC)"
-                required: true
+                required: false
 
 jobs:
     build:
@@ -71,6 +71,7 @@ jobs:
 
     test-oidc:
         needs: build
+        if: ${{ inputs.identity-id != '' }}
         runs-on: ubuntu-latest
         permissions:
             id-token: write
