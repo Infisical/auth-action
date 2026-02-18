@@ -1,14 +1,19 @@
 name: CI
 on:
-    workflow_dispatch:
-    # push:
-    #     branches: [main]
-    #     paths-ignore:
-    #         - "README.md"
-    # pull_request:
-    #     branches: [main]
-    #     paths-ignore:
-    #         - "README.md"
+    push:
+        branches: [main]
+        paths-ignore:
+            - "README.md"
+            - "LICENSE"
+            - ".prettierignore"
+            - ".gitignore"
+    pull_request:
+        branches: [main]
+        paths-ignore:
+            - "README.md"
+            - "LICENSE"
+            - ".prettierignore"
+            - ".gitignore"
 
 permissions:
     pull-requests: write
