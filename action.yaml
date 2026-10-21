@@ -41,5 +41,5 @@ outputs:
   access-token:
     description: "The obtained Infisical access token (only set when output-credential is true)"
 runs:
-  using: "node20"
+  using: "node24"
   main: "dist/index.cjs"
