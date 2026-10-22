@@ -6,6 +6,7 @@ This GitHub Action performs authentication with Infisical—whether hosted in th
 
 - In order to use this, you will need to configure a [Machine Identity](https://infisical.com/docs/documentation/platform/identities/machine-identities) for your project.
 - This action supports three ways to authenticate your workflows with Infisical - [AWS IAM Auth](https://infisical.com/docs/documentation/platform/identities/aws-auth), [OIDC](https://infisical.com/docs/documentation/platform/identities/oidc-auth/github) and [Universal Auth](https://infisical.com/docs/documentation/platform/identities/universal-auth).
+- This action runs on Node 24. If you use self-hosted runners or GitHub Enterprise Server, your runner must be [v2.327.1](https://github.com/actions/runner/releases/tag/v2.327.1) or newer.
 
 ### AWS IAM Auth
 
