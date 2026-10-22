@@ -1,6 +1,6 @@
 {
   "name": "infisical-auth-action",
-  "version": "1.0.7",
+  "version": "1.0.1",
   "description": "Github action to authenticate with Infisical",
   "main": "lib/index.js",
   "type": "module",
